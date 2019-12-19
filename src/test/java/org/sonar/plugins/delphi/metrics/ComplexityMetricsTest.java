@@ -63,11 +63,16 @@ public class ComplexityMetricsTest {
   public void setup() {
     baseDir = DelphiUtils.getResource(ROOT_NAME);
     sensorContext = SensorContextTester.create(baseDir);
-
-    ActiveRulesBuilder rulesBuilder = new ActiveRulesBuilder();
-    NewActiveRule rule = rulesBuilder.create(ComplexityMetrics.RULE_KEY_METHOD_CYCLOMATIC_COMPLEXITY);
-    rule.setParam("Threshold", "3").setLanguage(DelphiLanguage.KEY).activate();
-    activeRules = rulesBuilder.build();
+    
+    NewActiveRule activeRule = new NewActiveRule.Builder()
+            .setRuleKey(ComplexityMetrics.RULE_KEY_METHOD_CYCLOMATIC_COMPLEXITY)
+            .setParam("Threshold", "3")
+            .setLanguage(DelphiLanguage.KEY)
+            .build();
+    
+    activeRules = new ActiveRulesBuilder()
+            .addRule(activeRule)
+            .build();
   }
 
   private String getRelativePath(File prefix, String fullPath)

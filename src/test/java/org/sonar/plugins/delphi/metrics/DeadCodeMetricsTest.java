@@ -30,9 +30,10 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.issue.Issuable;
+//import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.plugins.delphi.DelphiTestUtils;
 import org.sonar.plugins.delphi.antlr.analyzer.ASTAnalyzer;
@@ -73,7 +74,7 @@ public class DeadCodeMetricsTest {
   private List<ClassInterface> classes;
   private List<FunctionInterface> functions;
   private SensorContextTester sensorContext;
-  private Issuable issuable;
+  //private Issuable issuable;
   private final List<Issue> issues = new ArrayList<>();
   private ActiveRules activeRules;
   private File baseDir;
@@ -122,10 +123,22 @@ public class DeadCodeMetricsTest {
     baseDir = DelphiUtils.getResource(ROOT_NAME);
     sensorContext = SensorContextTester.create(baseDir);
 
-    ActiveRulesBuilder rulesBuilder = new ActiveRulesBuilder();
-    rulesBuilder.create(DeadCodeMetrics.RULE_KEY_UNUSED_FUNCTION).setLanguage(DelphiLanguage.KEY).activate();
-    rulesBuilder.create(DeadCodeMetrics.RULE_KEY_UNUSED_UNIT).setLanguage(DelphiLanguage.KEY).activate();
-    activeRules = rulesBuilder.build();
+    
+    
+   NewActiveRule activeRule1 = new NewActiveRule.Builder()
+            .setRuleKey(DeadCodeMetrics.RULE_KEY_UNUSED_FUNCTION)
+            .setLanguage(DelphiLanguage.KEY)
+            .build();
+    
+   NewActiveRule activeRule2 = new NewActiveRule.Builder()
+            .setRuleKey(DeadCodeMetrics.RULE_KEY_UNUSED_UNIT)
+            .setLanguage(DelphiLanguage.KEY)
+            .build(); 
+    
+    activeRules = new ActiveRulesBuilder()
+            .addRule(activeRule1)
+            .addRule(activeRule2)
+            .build();
 
     metrics = new DeadCodeMetrics(activeRules, sensorContext);
   }
